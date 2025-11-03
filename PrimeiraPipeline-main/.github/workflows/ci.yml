@@ -20,7 +20,7 @@ jobs:
       - name: Baixar o código do repositório
         uses: actions/checkout@v3
 
-      - name: Inicializar SAST (CodeQL)
+      -- name: Inicializar SAST (CodeQL)
         uses: github/codeql-action/init@v3
         with:
           languages: ['html', 'javascript']
