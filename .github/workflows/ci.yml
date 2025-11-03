@@ -1,0 +1,52 @@
+name: Pipeline SAST e DAST
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  analise_sast:
+    name: 1. Análise SAST (CodeQL)
+    runs-on: ubuntu-latest
+
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+
+    steps:
+      - name: Baixar o código do repositório
+        uses: actions/checkout@v3
+
+      - name: Inicializar SAST (CodeQL)
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ['html']
+
+      - name: Executar Análise SAST (CodeQL)
+        uses: github/codeql-action/analyze@v3
+
+  analise_dast:
+    name: 2. Análise DAST (OWASP ZAP)
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Baixar o código do repositório
+        uses: actions/checkout@v3
+
+      - name: Instalar um servidor web simples
+        run: npm install -g http-server
+
+      - name: Iniciar servidor web em background
+        run: http-server . -p 8080 &
+
+      - name: Pausa para o servidor iniciar
+        run: sleep 10s
+
+      - name: Executar Análise DAST (OWASP ZAP)
+        uses: zaproxy/action-baseline@v0.10.0
+        with:
+          target: 'http://127.0.0.1:8080'
+          fail_action: false
