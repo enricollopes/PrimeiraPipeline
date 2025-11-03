@@ -23,7 +23,7 @@ jobs:
       - name: Inicializar SAST (CodeQL)
         uses: github/codeql-action/init@v3
         with:
-          languages: ['html']
+          languages: ['html', 'javascript']
 
       - name: Executar Análise SAST (CodeQL)
         uses: github/codeql-action/analyze@v3
